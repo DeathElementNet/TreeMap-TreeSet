@@ -1,25 +1,37 @@
 import java.util.Comparator;
-import java.util.StringTokenizer;
 
 public class ComparatorMaxSurname implements Comparator<Person> {
-    private int maxNumberOfWords;
+    protected int maxSurnameWords;
+    protected int firstLength;
+    protected int secondLength;
 
-    public ComparatorMaxSurname(int maxNumberOfWords) {
-        this.maxNumberOfWords = maxNumberOfWords;
+    public ComparatorMaxSurname(int maxSurnameWords) {
+        this.maxSurnameWords = maxSurnameWords;
     }
 
     @Override
+    //Делим фамилии на слова
     public int compare(Person o1, Person o2) {
-        StringTokenizer str1 = new StringTokenizer(o1.getSurname());
-        StringTokenizer str2 = new StringTokenizer(o2.getSurname());
+        String[] ar1 = o1.getSurname().split(" ");
+        String[] ar2 = o2.getSurname().split(" ");
 
-        if (str1.countTokens() >= maxNumberOfWords || str2.countTokens() >= maxNumberOfWords) {
-            if (str1.countTokens() < str2.countTokens()) {
-                return -1;
-            } else if (str1.countTokens() > str2.countTokens()) {
-                return 1;
-            }
+        firstLength = ar1.length;
+        secondLength = ar2.length;
+
+        //приравниваем к лимиту, если фамилии длиннее установленного
+        if (ar1.length > maxSurnameWords) {
+            firstLength = maxSurnameWords;
         }
-        return Integer.compare(o1.getAge(), o2.getAge());
+
+        if (ar2.length > maxSurnameWords) {
+            secondLength = maxSurnameWords;
+        }
+
+        //Проверка по возрасту, если фамилии одинаковые
+        if (firstLength == secondLength) {
+            return o1.getAge() - o2.getAge();
+        } else {
+            return firstLength - secondLength;
+        }
     }
 }
